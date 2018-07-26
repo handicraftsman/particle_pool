@@ -53,7 +53,7 @@ t = ParticlePool::Task.new do
 end
 p.push(t)
 
-puts t.await
+puts t.await_sync
 
 # Wait for all results to appear
 while $sz != (1024 * Etc.nprocessors) do

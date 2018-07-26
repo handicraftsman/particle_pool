@@ -33,7 +33,7 @@ t = ParticlePool::Task.new do
 end
 p.push(t)
 
-puts t.await
+puts t.await_sync
 
 while $sz != (1024 * Etc.nprocessors) do
   sleep 1

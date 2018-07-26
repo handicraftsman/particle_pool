@@ -43,6 +43,14 @@ class ParticlePool::Task
   end
 
   def await(s=0.01)
+    until done?
+      Fiber.yield
+      sleep(s)
+    end
+    @value
+  end
+
+  def await_sync(s=0.01)
     sleep(s) until done?
     @value
   end
