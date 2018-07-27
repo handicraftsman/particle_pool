@@ -1,6 +1,9 @@
 class ParticlePool::Pool
   def initialize
-    @threads = []
+    @mtx         = Mutex.new
+    @threads     = []
+    @round_robin = false
+    @iter        = @threads.each
   end
 
   def <<(t, *args, **kwargs)
@@ -8,9 +11,11 @@ class ParticlePool::Pool
   end
 
   def push(t, *args, **kwargs)
-    thr = @threads.min
-    raise 'no threads available' unless t
-    thr.push(t, *args, **kwargs)
+    @mtx.synchronize do
+      thr = @threads.min
+      raise 'no threads available' unless t
+      thr.push(t, *args, **kwargs)
+    end
   end
 
   def start(size = Etc.nprocessors)

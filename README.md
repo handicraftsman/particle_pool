@@ -18,51 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-```ruby
-# Require the library
-require 'particle_pool'
-
-# Create a new pool
-p = ParticlePool::Pool.new
-
-# Start it
-p.start
-
-(1024 * Etc.nprocessors).times do |i|
-  # Create some tasks
-  t = ParticlePool::Task.new do |n|
-    raise 'fib not defined for negative numbers' if n < 0
-    nv, ov = 1, 0
-    n.times do
-      nv, ov = nv + ov, nv
-      Fiber.yield
-    end
-    $arr << ov
-    $sz += 1
-    ov
-  end
-
-  # And push them into the pool.
-  p.push(t, i)
-end
-
-# You can wait for tasks to finish!
-t = ParticlePool::Task.new do
-  sleep 16
-  'Hello, World!'
-end
-p.push(t)
-
-puts t.await_sync
-
-# Wait for all results to appear
-while $sz != (1024 * Etc.nprocessors) do
-  sleep 1
-end
-
-# Sum results and print the final result
-puts $arr.reduce(:+)
-```
+You can find usage examples in the bin/ directory.
 
 ## Development
 

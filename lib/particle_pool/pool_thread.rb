@@ -5,6 +5,7 @@ class ParticlePool::PoolThread
 
   def initialize
     @queue = Queue.new
+    @mtx   = Mutex.new
     @tasks = 0
   end
 
@@ -13,12 +14,14 @@ class ParticlePool::PoolThread
   end
 
   def push(t, *args, **kwargs)
-    @tasks += 1
-    @queue << {
-      task: t,
-      args: args,
-      kwargs: kwargs
-    }
+    @mtx.synchronize do
+      @tasks += 1
+      @queue << {
+        task: t,
+        args: args,
+        kwargs: kwargs
+      }
+    end
   end
 
   def <=>(other)
